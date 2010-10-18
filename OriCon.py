@@ -13,7 +13,7 @@ class OriCon():
         else:
             self.imagen_activa+=1
             
-        self.mostrar(self.imagen_activa)
+        self.visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
 
 
     def mostrarAnterior(self):
@@ -22,7 +22,7 @@ class OriCon():
         else:
             self.imagen_activa -= 1
             
-        self.mostrar(self.imagen_activa)
+        self.visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
 
     def __init__(self):
     #    creo la lista de imagenes
@@ -40,13 +40,13 @@ class OriCon():
 #        fondo.fill((255, 0, 0))
 #        self.ventana.blit(fondo, self.SCREENRECT)
         
-        visor = Visor()
-        visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
+        self.visor = Visor()
+        self.visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
         
         selector = Selector()
 #        prueba = Prueba()
 #        sprites = pygame.sprite.RenderPlain((selector))
-        sprites = pygame.sprite.RenderUpdates((visor,  selector))
+        sprites = pygame.sprite.RenderUpdates((self.visor,  selector))
 #        self.ventana.blit(r,(0, 0))
         
         while True:
