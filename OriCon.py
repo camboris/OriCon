@@ -7,47 +7,6 @@ class OriCon():
     imagen_activa = 0
     redibujar = False
 
-    def mostrar(self,  indice):
-        print self.lista_imagenes[indice]
-        #trato de cargar la imagen
-        try:
-            imagen = pygame.image.load("entrada/%s"%self.lista_imagenes[indice])
-        except:
-            imagen = None
-            
-        # escala y proceso
-        if not imagen: 
-            return
-            
-        imagen_rect = imagen.get_rect()
-        ventana_rect = self.ventana.get_rect()
-        escala = None
-        
-        factor_escala_x = float(ventana_rect[2]) / float(imagen_rect[2])
-        print factor_escala_x 
-        factor_escala_y = float(ventana_rect[3]) / float(imagen_rect[3])
-        print factor_escala_y
-        if factor_escala_x > 1 or factor_escala_y > 1:
-            escala = min(factor_escala_x,  factor_escala_y)
-        elif factor_escala_x < 1 or factor_escala_y <1:
-            escala = min(factor_escala_x,  factor_escala_y)
-            
-        if escala:
-            imagen = pygame.transform.scale(imagen,  (imagen_rect[2] * escala,  imagen_rect[3] * escala))
-            imagen_rect = imagen.get_rect()
-            
-        print imagen
-        
-        #mostrarla
-        if imagen:
-            imagen.convert()
-            self.ventana.fill((255, 0, 0))
-            offset_x = (ventana_rect[2] - imagen_rect[2]) / 2
-            offset_y = (ventana_rect[3] - imagen_rect[3]) / 2
-            self.ventana.blit(imagen, (offset_x, offset_y))
-        
-        self.redibujar = True
-
     def mostrarSiguiente(self):
         if self.imagen_activa + 1 >= len(self.lista_imagenes):
             self.imagen_activa = 0
@@ -81,12 +40,13 @@ class OriCon():
 #        fondo.fill((255, 0, 0))
 #        self.ventana.blit(fondo, self.SCREENRECT)
         
-        self.mostrar(self.imagen_activa)
+        visor = Visor()
+        visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
         
         selector = Selector()
-        
+#        prueba = Prueba()
 #        sprites = pygame.sprite.RenderPlain((selector))
-        sprites = pygame.sprite.RenderUpdates((selector))
+        sprites = pygame.sprite.RenderUpdates((visor,  selector))
 #        self.ventana.blit(r,(0, 0))
         
         while True:
@@ -103,14 +63,63 @@ class OriCon():
             sprites.update()
             sprites.draw(self.ventana)
             
-            if self.redibujar:
-                pygame.display.flip()
+#            if self.redibujar:
+            pygame.display.flip()
 
+
+
+class Visor(pygame.sprite.Sprite):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        ventana = pygame.display.get_surface()
+        self.image = pygame.Surface(ventana.get_rect().size)
+        self.rect = ventana.get_rect()
+    
+    def mostrar(self,  ruta_imagen):
+        #trato de cargar la imagen
+        try:
+            imagen = pygame.image.load(ruta_imagen)
+        except:
+            imagen = None
+            
+        # escala y proceso
+        if not imagen: 
+            return
+            
+        imagen_rect = imagen.get_rect()
+        ventana_rect = self.image.get_rect()
+        escala = None
+        
+        factor_escala_x = float(ventana_rect[2]) / float(imagen_rect[2])
+        print factor_escala_x 
+        factor_escala_y = float(ventana_rect[3]) / float(imagen_rect[3])
+        print factor_escala_y
+        if factor_escala_x > 1 or factor_escala_y > 1:
+            escala = min(factor_escala_x,  factor_escala_y)
+        elif factor_escala_x < 1 or factor_escala_y <1:
+            escala = min(factor_escala_x,  factor_escala_y)
+            
+        if escala:
+            imagen = pygame.transform.scale(imagen,  (imagen_rect[2] * escala,  imagen_rect[3] * escala))
+            imagen_rect = imagen.get_rect()
+            
+        print imagen
+        
+        #mostrarla
+        if imagen:
+            imagen.convert()
+#                self.ventana.fill((255, 0, 0))
+            offset_x = (ventana_rect[2] - imagen_rect[2]) / 2
+            offset_y = (ventana_rect[3] - imagen_rect[3]) / 2
+            self.image.blit(imagen, (offset_x, offset_y))
+        
+#        self.redibujar = True
+        
 class Selector(pygame.sprite.Sprite):
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.rect = Rect(0, 0, 60, 80)
-        self.image = pygame.Surface(self.rect.size)
+        self.image = pygame.Surface(self.rect.size, SRCALPHA)
         self.image.fill((255, 255, 0, 50))
         
     def update(self):
