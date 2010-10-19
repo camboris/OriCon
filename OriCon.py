@@ -57,8 +57,13 @@ class OriCon():
                 if event.type == pygame.KEYDOWN:
                     if event.key is pygame.K_SPACE:
                         self.mostrarSiguiente()
+                    elif event.key == pygame.K_LEFT:
+                        selector.achicar()
+                    elif event.key == pygame.K_RIGHT:
+                        selector.agrandar()
                     elif event.key is pygame.K_BACKSPACE:
                         self.mostrarAnterior()
+
             
             sprites.update()
             sprites.draw(self.ventana)
@@ -120,14 +125,19 @@ class Selector(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.rect = Rect(0, 0, 60, 80)
         self.image = pygame.Surface(self.rect.size, SRCALPHA)
-        self.image.fill((255, 255, 0, 50))
+        self.image.fill((255, 0, 0, 75))
         
     def update(self):
         pos = pygame.mouse.get_pos()
         self.rect.midtop = pos
         
+    def agrandar(self):
+        self.rect.inflate_ip(6, 8)
+        self.image = pygame.transform.scale(self.image,  self.rect.size)
+    
+    def achicar(self):
+        self.rect.inflate_ip(-6, -8)
+        self.image = pygame.transform.scale(self.image,  self.rect.size)
         
-
-
 if __name__ == "__main__":
     OriCon()
