@@ -7,6 +7,7 @@ class OriCon():
     imagen_activa = 0
     redibujar = False
     imagen_pil = None
+    contador = 0
 
     def mostrarSiguiente(self):
         if self.imagen_activa + 1 >= len(self.lista_imagenes):
@@ -15,6 +16,7 @@ class OriCon():
             self.imagen_activa+=1
             
         self.visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
+        self.imagen_pil = None
 
 
     def mostrarAnterior(self):
@@ -24,6 +26,7 @@ class OriCon():
             self.imagen_activa -= 1
         
         self.visor.mostrar("entrada/%s"%self.lista_imagenes[self.imagen_activa])
+        self.imagen_pil = None
     
     def exportarImagen(self):
         #calcular la imagen para exportar por pil
@@ -51,8 +54,8 @@ class OriCon():
 #        recorte = self.imagen_pil.crop((10, 10, 15, 15))
         recorte = recorte.resize((600, 800))
         recorte = recorte.convert("L")
-        recorte.save("salida/algo.jpg",  "JPEG")
-        
+        self.contador += 1
+        recorte.save("salida/ori%s.jpg"%str(self.contador).zfill(3),  "JPEG")
     
     def __init__(self):
     #    creo la lista de imagenes
